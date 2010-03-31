@@ -1,7 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "AutotestTmux" do
-  it "fails" do
-    fail "hey buddy, you should probably rename this file and start specing for real"
+describe Autotest::Tmux do
+  context 'all added hooks should be called by autotest' do
+    Autotest::HOOKS.keys.each do |hook|
+      subject { Autotest::ALL_HOOKS }
+      it { should include(hook) }
+    end
   end
 end

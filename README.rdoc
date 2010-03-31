@@ -1,9 +1,34 @@
 = autotest-tmux
 
-Description goes here.
+http://github.com/yoshuki/autotest-tmux/
+
+== Description
+
+Autotest::Tmux shows autotest/autospec progress on tmux status-right.
+
+== Features
+
+* Screenshots aren't available yet. (but, almost same as autotest_screen[http://f.hatena.ne.jp/yoshuki/autotest_screen/].)
+
+== Synopsis
+
+$HOME/.autotest
+  require 'autotest/tmux'
+  # Autotest::Tmux.statusright = '"#22T" %H:%M %d-%b-%y (your statusright)'
+
+* To prevent server information (like "set option: status-right -> ..."), you should start tmux server with -q option first.
+
+== Requirements
+
+* rubygems
+* autotest
+
+== Install
+
+gem install autotest-tmux
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
