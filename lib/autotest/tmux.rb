@@ -68,6 +68,7 @@ class Autotest::Tmux
 
   Autotest.add_hook :died do |at, *args|
     message "Exception occured. (#{at.class})", :red
+    puts "Exception occured. (#{at.class}): #{args.first}" unless args.nil?
     next false
   end
 
@@ -95,8 +96,9 @@ class Autotest::Tmux
     next false unless execute?
 
     output = at.results.join
+    class_name = at.class.name
 
-    case at.class.name
+    case class_name
     when 'Autotest', 'Autotest::Rails'
       results = output.scan(/(\d+)\s*failures?,\s*(\d+)\s*errors?/).first
       num_failures, num_errors = results.map{|r| r.to_i}
@@ -106,7 +108,7 @@ class Autotest::Tmux
       else
         @last_message = {:message => 'All Green', :color => :green}
       end
-    when 'Autotest::Rspec', 'Autotest::RailsRspec', 'Autotest::MerbRspec'
+    when 'Autotest::Rspec', 'Autotest::Rspec2', 'Autotest::RailsRspec', 'Autotest::MerbRspec'
       results = output.scan(/(\d+)\s*examples?,\s*(\d+)\s*failures?(?:,\s*(\d+)\s*pendings?)?/).first
       num_examples, num_failures, num_pendings = results.map{|r| r.to_i}
 
@@ -117,6 +119,8 @@ class Autotest::Tmux
       else
         @last_message = {:message => 'All Green', :color => :green}
       end
+    else
+      @last_message = {:message => "Unknown class name. (#{class_name})", :color => :red}
     end
     next false
   end

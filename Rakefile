@@ -10,7 +10,9 @@ begin
     gem.email = "yoshuki@saikyoline.jp"
     gem.homepage = "http://github.com/yoshuki/autotest-tmux"
     gem.authors = ["MIKAMI Yoshiyuki"]
-    gem.add_development_dependency "rspec", ">= 1.2.9"
+    gem.add_development_dependency "autotest", ">= 4.4.1"
+    gem.add_development_dependency "rspec", ">= 2.0.0"
+    gem.add_dependency "autotest"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
@@ -18,16 +20,15 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.rspec_opts = ['-c', '-f documentation', '-r ./spec/spec_helper.rb']
+  t.pattern = 'spec/**/*_spec.rb'       # same as default
 end
 
-Spec::Rake::SpecTask.new(:rcov) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
+RSpec::Core::RakeTask.new(:rcov) do |t|
+  t.rcov_opts = nil                     # same as default
+  t.pattern = 'spec/**/*_spec.rb'       # same as default
 end
 
 task :spec => :check_dependencies

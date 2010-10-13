@@ -1,6 +1,6 @@
 = autotest-tmux
 
-http://github.com/yoshuki/autotest-tmux/
+http://github.com/yoshuki/autotest-tmux
 
 == Description
 
