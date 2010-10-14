@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{autotest-tmux}
-  s.version = "1.1.0"
+  s.version = "1.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["MIKAMI Yoshiyuki"]
-  s.date = %q{2010-10-14}
-  s.description = %q{shows autotest/autospec progress on tmux status-right.}
+  s.date = %q{2010-10-15}
+  s.description = %q{displays autotest/autospec progress on tmux status-right.}
   s.email = %q{yoshuki@saikyoline.jp}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{shows autotest/autospec progress on tmux status-right.}
+  s.summary = %q{displays autotest/autospec progress on tmux status-right.}
   s.test_files = [
     "spec/autotest-tmux_spec.rb",
      "spec/spec_helper.rb"
