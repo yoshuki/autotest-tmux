@@ -2,7 +2,7 @@ require 'rubygems'
 require 'autotest'
 
 ##
-# Autotest::Tmux shows autotest/autospec progress on tmux status-right.
+# Autotest::Tmux displays autotest/autospec progress on tmux status-right.
 #
 # == Features
 # * Screenshots aren't available yet. (but, almost same as autotest_screen[http://f.hatena.ne.jp/yoshuki/autotest_screen/].)

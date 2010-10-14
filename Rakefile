@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "autotest-tmux"
-    gem.summary = %Q{shows autotest/autospec progress on tmux status-right.}
-    gem.description = %Q{shows autotest/autospec progress on tmux status-right.}
+    gem.summary = %Q{displays autotest/autospec progress on tmux status-right.}
+    gem.description = %Q{displays autotest/autospec progress on tmux status-right.}
     gem.email = "yoshuki@saikyoline.jp"
     gem.homepage = "http://github.com/yoshuki/autotest-tmux"
     gem.authors = ["MIKAMI Yoshiyuki"]
