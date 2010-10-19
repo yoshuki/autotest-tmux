@@ -92,36 +92,39 @@ class Autotest::Tmux
     next false
   end
 
-  Autotest.add_hook :ran_command do |at, *args|
-    next false unless execute?
-
-    output = at.results.join
-    class_name = at.class.name
-
+  def self.parse_output(output, class_name)
     case class_name
     when 'Autotest', 'Autotest::Rails'
       results = output.scan(/(\d+)\s*failures?,\s*(\d+)\s*errors?/).first
       num_failures, num_errors = results.map{|r| r.to_i}
 
       if num_failures > 0 || num_errors > 0
-        @last_result = {:message => "Red F:#{num_failures} E:#{num_errors}", :color => :red}
+        result = {:message => "Red F:#{num_failures} E:#{num_errors}", :color => :red}
       else
-        @last_result = {:message => 'All Green', :color => :green}
+        result = {:message => 'All Green', :color => :green}
       end
     when 'Autotest::Rspec', 'Autotest::Rspec2', 'Autotest::RailsRspec', 'Autotest::RailsRspec2', 'Autotest::MerbRspec'
       results = output.scan(/(\d+)\s*examples?,\s*(\d+)\s*failures?(?:,\s*(\d+)\s*pendings?)?/).first
       num_examples, num_failures, num_pendings = results.map{|r| r.to_i}
 
       if num_failures > 0
-        @last_result = {:message => "Fail F:#{num_failures} P:#{num_pendings}", :color => :red}
+        result = {:message => "Fail F:#{num_failures} P:#{num_pendings}", :color => :red}
       elsif num_pendings > 0
-        @last_result = {:message => "Pend F:#{num_failures} P:#{num_pendings}", :color => :yellow}
+        result = {:message => "Pend F:#{num_failures} P:#{num_pendings}", :color => :yellow}
       else
-        @last_result = {:message => 'All Green', :color => :green}
+        result = {:message => 'All Green', :color => :green}
       end
-    else
-      @last_result = {:message => "Unknown class. (#{class_name})"}
     end
+    result || {:message => "Unknown class. (#{class_name})"}
+  end
+
+  Autotest.add_hook :ran_command do |at, *args|
+    next false unless execute?
+
+    output = at.results.join
+    class_name = at.class.name
+
+    @last_result = parse_output(output, class_name)
     next false
   end
 
