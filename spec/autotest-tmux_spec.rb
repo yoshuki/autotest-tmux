@@ -9,7 +9,7 @@ describe Autotest::Tmux do
   end
 
   describe 'When display message' do
-    context 'without params' do
+    context 'without arguments' do
       it { Autotest::Tmux.message.should be_true }
     end
 
