@@ -68,7 +68,7 @@ class Autotest::Tmux
 
   Autotest.add_hook :died do |at, *args|
     message "Exception occured. (#{at.class})", :red
-    puts "Exception occured. (#{at.class}): #{args.first}" unless args.nil?
+    puts "Exception occured. (#{at.class}): #{args.first}"
     next false
   end
 

@@ -39,4 +39,4 @@ gem install autotest-tmux
 
 == Copyright
 
-Copyright (c) 2010 MIKAMI Yoshiyuki. See LICENSE for details.
+Copyright (c) 2010-2011 MIKAMI Yoshiyuki. See LICENSE for details.
