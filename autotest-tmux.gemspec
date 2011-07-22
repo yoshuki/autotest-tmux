@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{autotest-tmux}
-  s.version = "1.2.2"
+  s.version = "1.2.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["MIKAMI Yoshiyuki"]
-  s.date = %q{2011-07-12}
+  s.date = %q{2011-07-22}
   s.description = %q{displays autotest/autospec progress on tmux status-right.}
   s.email = %q{yoshuki@saikyoline.jp}
   s.extra_rdoc_files = [
