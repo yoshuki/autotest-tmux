@@ -18,6 +18,11 @@ require 'autotest'
 class Autotest::Tmux
   DEFAULT_STATUSRIGHT = '"#22T" %H:%M %d-%b-%y'
   DEFAULT_TMUX_CMD = 'tmux'
+  DEFAULT_UTEST_CLASSES = ['Autotest', 'Autotest::Rails']
+  DEFAULT_RSPEC_CLASSES = ['Autotest::Rspec', 'Autotest::Rspec2',
+                           'Autotest::RailsRspec', 'Autotest::RailsRspec2',
+                           'Autotest::MerbRspec',
+                           'Autotest::CucumberRspec2']
 
   SCREEN_COLOR = {
     :black  => ['white', 'black'],
@@ -28,11 +33,15 @@ class Autotest::Tmux
 
   @last_result = {}
 
-  @statusright = @tmux_cmd = nil
+  @statusright = @tmux_cmd = @utest_classes = @rspec_classes = nil
   def self.statusright; @statusright || DEFAULT_STATUSRIGHT.dup; end
   def self.statusright=(s); @statusright = s; end
   def self.tmux_cmd; @tmux_cmd || DEFAULT_TMUX_CMD.dup; end
   def self.tmux_cmd=(tc); @tmux_cmd = tc; end
+  def self.utest_classes; @utest_classes || DEFAULT_UTEST_CLASSES.dup; end
+  def self.utest_classes=(uc); @utest_classes = uc; end
+  def self.rspec_classes; @rspec_classes || DEFAULT_RSPEC_CLASSES.dup; end
+  def self.rspec_classes=(rc); @rspec_classes = rc; end
 
   def self.send_cmd(msg)
     system "#{tmux_cmd} set status-right '#{msg.gsub("'", "\'")}'"
@@ -61,7 +70,7 @@ class Autotest::Tmux
 
   def self.parse_output(output, class_name)
     case class_name
-    when 'Autotest', 'Autotest::Rails'
+    when *utest_classes
       results = output.scan(/(\d+)\s*failures?,\s*(\d+)\s*errors?/).first
       num_failures, num_errors = results.map{|r| r.to_i}
 
@@ -70,7 +79,7 @@ class Autotest::Tmux
       else
         result = {:message => 'All Green', :color => :green}
       end
-    when 'Autotest::Rspec', 'Autotest::Rspec2', 'Autotest::RailsRspec', 'Autotest::RailsRspec2', 'Autotest::MerbRspec', 'Autotest::CucumberRspec2'
+    when *rspec_classes
       results = output.scan(/(\d+)\s*examples?,\s*(\d+)\s*failures?(?:,\s*(\d+)\s*pendings?)?/).first
       num_examples, num_failures, num_pendings = results.map{|r| r.to_i}
 
