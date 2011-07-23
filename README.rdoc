@@ -15,6 +15,7 @@ Autotest::Tmux displays autotest/autospec progress on tmux status-right.
 $HOME/.autotest
   require 'autotest/tmux'
   # Autotest::Tmux.statusright = '"#22T" %H:%M %d-%b-%y (your statusright)'
+  # Autotest::Tmux.rspec_classes = ['Autotest::Rspec', 'Autotest::RailsRspec']
 
 * To prevent server information (like "set option: status-right -> ..."), you should start tmux server with -q option first.
 
