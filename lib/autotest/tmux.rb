@@ -28,6 +28,16 @@ class Autotest::Tmux
 
   @last_result = {}
 
+  @statusright = @tmux_cmd = nil
+  def self.statusright; @statusright || DEFAULT_STATUSRIGHT.dup; end
+  def self.statusright=(s); @statusright = s; end
+  def self.tmux_cmd; @tmux_cmd || DEFAULT_TMUX_CMD.dup; end
+  def self.tmux_cmd=(tc); @tmux_cmd = tc; end
+
+  def self.send_cmd(msg)
+    system "#{tmux_cmd} set status-right '#{msg.gsub("'", "\'")}'"
+  end
+
   def self.message(msg=statusright, sc=:black)
     msg ||= statusright       # when nil given
     sc  ||= :black            # when nil given
@@ -49,14 +59,30 @@ class Autotest::Tmux
     !($TESTING || !run_tmux_session?)
   end
 
-  @statusright = @tmux_cmd = nil
-  def self.statusright; @statusright || DEFAULT_STATUSRIGHT.dup; end
-  def self.statusright=(s); @statusright = s; end
-  def self.tmux_cmd; @tmux_cmd || DEFAULT_TMUX_CMD.dup; end
-  def self.tmux_cmd=(tc); @tmux_cmd = tc; end
+  def self.parse_output(output, class_name)
+    case class_name
+    when 'Autotest', 'Autotest::Rails'
+      results = output.scan(/(\d+)\s*failures?,\s*(\d+)\s*errors?/).first
+      num_failures, num_errors = results.map{|r| r.to_i}
 
-  def self.send_cmd(msg)
-    system "#{tmux_cmd} set status-right '#{msg.gsub("'", "\'")}'"
+      if num_failures > 0 || num_errors > 0
+        result = {:message => "Red F:#{num_failures} E:#{num_errors}", :color => :red}
+      else
+        result = {:message => 'All Green', :color => :green}
+      end
+    when 'Autotest::Rspec', 'Autotest::Rspec2', 'Autotest::RailsRspec', 'Autotest::RailsRspec2', 'Autotest::MerbRspec', 'Autotest::CucumberRspec2'
+      results = output.scan(/(\d+)\s*examples?,\s*(\d+)\s*failures?(?:,\s*(\d+)\s*pendings?)?/).first
+      num_examples, num_failures, num_pendings = results.map{|r| r.to_i}
+
+      if num_failures > 0
+        result = {:message => "Fail F:#{num_failures} P:#{num_pendings}", :color => :red}
+      elsif num_pendings > 0
+        result = {:message => "Pend F:#{num_failures} P:#{num_pendings}", :color => :yellow}
+      else
+        result = {:message => 'All Green', :color => :green}
+      end
+    end
+    result || {:message => "Unknown class. (#{class_name})"}
   end
 
   # All blocks return false, to execute each of following blocks defined in user's own ".autotest".
@@ -90,32 +116,6 @@ class Autotest::Tmux
   Autotest.add_hook :quit do |at, *args|
     message if execute?
     next false
-  end
-
-  def self.parse_output(output, class_name)
-    case class_name
-    when 'Autotest', 'Autotest::Rails'
-      results = output.scan(/(\d+)\s*failures?,\s*(\d+)\s*errors?/).first
-      num_failures, num_errors = results.map{|r| r.to_i}
-
-      if num_failures > 0 || num_errors > 0
-        result = {:message => "Red F:#{num_failures} E:#{num_errors}", :color => :red}
-      else
-        result = {:message => 'All Green', :color => :green}
-      end
-    when 'Autotest::Rspec', 'Autotest::Rspec2', 'Autotest::RailsRspec', 'Autotest::RailsRspec2', 'Autotest::MerbRspec', 'Autotest::CucumberRspec2'
-      results = output.scan(/(\d+)\s*examples?,\s*(\d+)\s*failures?(?:,\s*(\d+)\s*pendings?)?/).first
-      num_examples, num_failures, num_pendings = results.map{|r| r.to_i}
-
-      if num_failures > 0
-        result = {:message => "Fail F:#{num_failures} P:#{num_pendings}", :color => :red}
-      elsif num_pendings > 0
-        result = {:message => "Pend F:#{num_failures} P:#{num_pendings}", :color => :yellow}
-      else
-        result = {:message => 'All Green', :color => :green}
-      end
-    end
-    result || {:message => "Unknown class. (#{class_name})"}
   end
 
   Autotest.add_hook :ran_command do |at, *args|
