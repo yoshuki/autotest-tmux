@@ -80,6 +80,12 @@ describe Autotest::Tmux do
         subject { Autotest::Tmux.parse_output('1 example, 0 failures', name) }
         it { should eql({:message => 'All Green', :color => :green}) }
       end
+
+			context "With #{name}, a syntax error occured" do
+				error = "syntax error, unexpected $end, expecting keyword_end (SyntaxError)"
+				subject { Autotest::Tmux.parse_output(error, name) }
+				it { should eql({:message => 'Unable to run tests', :color => :red}) }
+			end
     end
 
     context 'With FooBar' do

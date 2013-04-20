@@ -79,18 +79,22 @@ class Autotest::Tmux
       else
         result = {:message => 'All Green', :color => :green}
       end
-    when *rspec_classes
-      results = output.scan(/(\d+)\s*examples?,\s*(\d+)\s*failures?(?:,\s*(\d+)\s*pendings?)?/).first
-      num_examples, num_failures, num_pendings = results.map{|r| r.to_i}
+	  when *rspec_classes
+			results = output.scan(/(\d+)\s*examples?,\s*(\d+)\s*failures?(?:,\s*(\d+)\s*pendings?)?/).first
+			if results
+				num_examples, num_failures, num_pendings = results.map{|r| r.to_i}
 
-      if num_failures > 0
-        result = {:message => "Fail F:#{num_failures} P:#{num_pendings}", :color => :red}
-      elsif num_pendings > 0
-        result = {:message => "Pend F:#{num_failures} P:#{num_pendings}", :color => :yellow}
-      else
-        result = {:message => 'All Green', :color => :green}
-      end
-    end
+				if num_failures > 0
+					result = {:message => "Fail F:#{num_failures} P:#{num_pendings}", :color => :red}
+				elsif num_pendings > 0
+					result = {:message => "Pend F:#{num_failures} P:#{num_pendings}", :color => :yellow}
+				else
+					result = {:message => 'All Green', :color => :green}
+				end
+			else
+				result = {:message => 'Unable to run tests', :color => :red}
+			end
+		end
     result || {:message => "Unknown class. (#{class_name})"}
   end
 
