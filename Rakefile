@@ -31,7 +31,7 @@ RSpec::Core::RakeTask.new(:rcov) do |t|
   t.pattern = 'spec/**/*_spec.rb'       # same as default
 end
 
-task :spec => :check_dependencies
+task :spec
 
 task :default => :spec
 

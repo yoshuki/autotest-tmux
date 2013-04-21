@@ -20,3 +20,5 @@ pkg
 release
 
 ## PROJECT::SPECIFIC
+.bundle/
+vendor/bundle/
